@@ -17,8 +17,8 @@ public class Main {
         Transaction transaction = session.beginTransaction();
 
         //save(session);
-        getBooks(session);
-        //updatePrice(session);
+       // getBooks(session);
+        updatePrice(session);
 
         transaction.commit();
         session.close();
@@ -57,24 +57,26 @@ public class Main {
     //to get all books published after the year 2010
     //Q1
     public static void getBooks(Session session){
-        Query query = session.createQuery("SELECT book FROM Book book WHERE book.publicationYear > 2010");
+        Query query = session.createQuery("SELECT b FROM Book b WHERE b.publicationYear > 2010");
         List<Book>books = query.list();
         for (Book book : books) {
             System.out.println(book.getTitle());
-            /*int publicationYear = book.getPublicationYear();
-            if (publicationYear > 2010) {
-                System.out.println(book.getTitle());
-            }*/
         }
     }
     //Q2
     public static void updatePrice(Session session){
-        Query query = session.createQuery("SELECT id,price from Book");
-        List<Object []>objects = query.list();
-        for (Object[] object : objects) {
-            int id = (int) object[0];
-            int name = (int) object[1];
-            System.out.println(id+" "+name);
+        Query query = session.createQuery("SELECT b FROM Book b WHERE b.author.name = :aut");
+        query.setParameter("aut", "Sam");
+        List<Book> books = query.list();
+        for (Book book : books) {
+            int price = book.getPrice();
+            int increasedPrice = price-price*10/100;
+            //System.out.println(increasedPrice);
+           Query query1 = session.createQuery("UPDATE Book set price=:p WHERE id=:i");
+            query1.setParameter("p",increasedPrice);
+            query1.setParameter("i",book.getId());
+            int status=query1.executeUpdate();
+            System.out.println(status);
         }
     }
 }
