@@ -17,7 +17,8 @@ public class Main {
         Transaction transaction = session.beginTransaction();
 
         //save(session);
-        //getBooks(session);
+        getBooks(session);
+        //updatePrice(session);
 
         transaction.commit();
         session.close();
@@ -54,14 +55,26 @@ public class Main {
         session.persist(author);
     }
     //to get all books published after the year 2010
+    //Q1
     public static void getBooks(Session session){
-        Query query = session.createQuery("from Book");
+        Query query = session.createQuery("SELECT book FROM Book book WHERE book.publicationYear > 2010");
         List<Book>books = query.list();
         for (Book book : books) {
-            int publicationYear = book.getPublicationYear();
+            System.out.println(book.getTitle());
+            /*int publicationYear = book.getPublicationYear();
             if (publicationYear > 2010) {
                 System.out.println(book.getTitle());
-            }
-      }
-}
+            }*/
+        }
+    }
+    //Q2
+    public static void updatePrice(Session session){
+        Query query = session.createQuery("SELECT id,price from Book");
+        List<Object []>objects = query.list();
+        for (Object[] object : objects) {
+            int id = (int) object[0];
+            int name = (int) object[1];
+            System.out.println(id+" "+name);
+        }
+    }
 }
