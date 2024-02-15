@@ -19,7 +19,9 @@ public class Main {
        // getBooks(session);
         //updatePrice(session);
         //delete(session);
-        getAveragePrice(session);
+        //getAveragePrice(session);
+       // getCountOfBooks(session);
+        getAuthor(session);
 
         transaction.commit();
         session.close();
@@ -91,5 +93,40 @@ public class Main {
         Query query = session.createQuery("SELECT AVG(b.price) FROM Book b");
         Double averagePrice = (Double) query.uniqueResult();
         System.out.println(averagePrice);
+    }
+    //Q5
+    public static void getCountOfBooks(Session session){
+        //Query query = session.createQuery("SELECT author.name, COUNT(*) FROM Author, Book WHERE author.id = books.Author_id GROUP BY author.id");
+        Query query = session.createQuery("SELECT a, COUNT(*) FROM Author a LEFT JOIN a.books b GROUP BY a.id");
+        List<Object[]> objects = query.list();
+        for (Object[] object : objects) {
+            Author author = (Author) object[0];
+            Long count = (Long) object[1];
+            System.out.println(author.getName()+" "+ count);
+        }
+    }
+    //Q10
+    public static void getAuthor(Session session){
+       // Query query = session.createQuery("SELECT a FROM Author a WHERE (SELECT a, COUNT(*) FROM Author a LEFT JOIN a.books b GROUP BY a.id)>(SELECT AVG(b.id) FROM Book b) ");
+        Query query = session.createQuery(
+                "SELECT a " +
+                        "FROM Author a " +
+                        "WHERE ( " +
+                        "   SELECT COUNT(*) " +
+                        "   FROM Book b " +
+                        "   WHERE b.author = a " +
+                        ") > ( " +
+                        "   SELECT AVG(books) " +
+                        "   FROM ( " +
+                        "       SELECT COUNT(b.id) as books " +
+                        "       FROM Book b " +
+                        "       GROUP BY b.author " +
+                        "   ) AS authorBooksCount " +
+                        ")"
+        );
+        List<Author>authors =query.list();
+        for (Author author : authors) {
+            System.out.println(author.getName());
+        }
     }
 }
