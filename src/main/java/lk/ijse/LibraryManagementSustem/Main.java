@@ -8,7 +8,6 @@ import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 public class Main {
@@ -18,7 +17,8 @@ public class Main {
 
         //save(session);
        // getBooks(session);
-        updatePrice(session);
+        //updatePrice(session);
+        delete(session);
 
         transaction.commit();
         session.close();
@@ -78,5 +78,15 @@ public class Main {
             int status=query1.executeUpdate();
             System.out.println(status);
         }
+    }
+    //Q3
+    public static void delete(Session session){
+        Query query = session.createQuery("DELETE FROM Author a WHERE a.id = :id");
+        query.setParameter("id", 6);
+        query.executeUpdate();
+    }
+    //Q4
+    public static void getAveragePrice(Session session){
+
     }
 }
