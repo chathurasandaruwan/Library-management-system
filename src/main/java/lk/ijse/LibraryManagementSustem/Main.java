@@ -18,7 +18,8 @@ public class Main {
         //save(session);
        // getBooks(session);
         //updatePrice(session);
-        delete(session);
+        //delete(session);
+        getAveragePrice(session);
 
         transaction.commit();
         session.close();
@@ -87,6 +88,8 @@ public class Main {
     }
     //Q4
     public static void getAveragePrice(Session session){
-
+        Query query = session.createQuery("SELECT AVG(b.price) FROM Book b");
+        Double averagePrice = (Double) query.uniqueResult();
+        System.out.println(averagePrice);
     }
 }
